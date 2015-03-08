@@ -1,0 +1,9 @@
+---
+Name: foxystripe-reviews
+---
+ProductPage:
+  extensions:
+    - HasReviews
+ProductPage_Controller:
+  extensions:
+    - HasReviews_Controller
