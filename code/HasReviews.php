@@ -5,7 +5,7 @@ class HasReviews extends DataExtension {
     private static $moderated_comments;
 
     private static $has_many = array(
-        'Reviews' => 'ProductReviews'
+        'Reviews' => 'ProductReview'
     );
 
     public function getProductReviews() {
@@ -24,6 +24,9 @@ class HasReviews_Controller extends Extension {
     );
 
     public function ProductReviewForm(){
-        return new ProductReviewForm($this->owner,'ProductReviewForm');
+        if(Member::currentUser()) {
+            return new ProductReviewForm($this->owner, 'ProductReviewForm');
+        }
+        return '<p class="error">You must be logged in to post a review</p>';
     }
 }

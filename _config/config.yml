@@ -7,3 +7,5 @@ ProductPage:
 ProductPage_Controller:
   extensions:
     - HasReviews_Controller
+ProductReviewForm:
+  max_stars: 5 # The maximum rating allowed

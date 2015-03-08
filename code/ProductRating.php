@@ -2,18 +2,13 @@
 
 class ProductRating extends DataObject {
 
-    private static $has_one = array(
-        'Review' => 'ProductReview'
+    private static $db = array(
+        'Rating' => 'Int',
+        'MaxRating' => 'Int'
     );
 
-    private static $default_sort = 'Created DESC';
-
-    public function getCMSFields() {
-
-
-
-    }
-
-
+    private static $has_one = array(
+        //'Review' => 'ProductReview'
+    );
 
 }

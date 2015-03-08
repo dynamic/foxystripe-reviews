@@ -5,7 +5,9 @@ class ProductReview extends DataObject {
     private static $db = array(
         'Title' => 'Varchar',
         'Content' => 'Text',
-        'Approved' => 'Boolean'
+        'Approved' => 'Boolean',
+        'Rating' => 'Int',
+        'MaxRating' => 'Int'
     );
 
     private static $has_one = array(
@@ -14,40 +16,43 @@ class ProductReview extends DataObject {
     );
 
     private static $has_many = array(
-        'Ratings' => 'ProductRating'
+        //'Ratings' => 'ProductRating'
     );
 
     private static $summary_fields = array(
         'Product.Title' => 'Product',
-        'Title' => 'Title',
+        'Summary' => 'Summary',
         'Created' => 'Created',
         'MemberDetails' => 'Reviewer',
-        //'Status' => 'Status'
+        'Status' => 'Status'
     );
 
     public function getCMSFields() {
 
         $fields = parent::getCMSFields();
 
+        /*
         $fields->addFieldsToTab('Root.Main', array(
             OptionSetField::create('Rating', 'Rating', array(1,2,3,4,5)))
         );
+        */
 
         return $fields;
 
     }
 
-    /*
+    public function getSummary() {
+        return $this->obj('Content')->LimitCharacters(40);
+    }
+
     public function getStatus() {
         return $this->Approved ? 'Approved' : 'Pending';
     }
-    */
 
     public function getMemberDetails() {
-        $reviewer = $this->Member()->Name;
-        $email = $this->Member()->Email;
+        $reviewer = $this->Customer()->Name;
+        $email = $this->Customer()->Email;
         return $reviewer .' (' . $email .')';
     }
-
 
 }
