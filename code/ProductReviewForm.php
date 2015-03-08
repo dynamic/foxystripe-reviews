@@ -3,6 +3,11 @@
 class ProductReviewForm extends Form {
 
     private static $max_stars;
+
+    public static function getMaxStars() {
+        return self::$max_stars;
+    }
+
     public function __construct($controller, $name) {
 
         $maxStars = $this->stat('max_stars');
@@ -10,7 +15,7 @@ class ProductReviewForm extends Form {
         $fields = FieldList::create(
             HiddenField::create('MaxRating')
                 ->setValue($maxStars),
-            NumericField::create('Rating')
+            NumericField::create('Rating', 'Rating', 5)
                 ->setAttribute('type','number')
                 ->setAttribute('max', $maxStars)
                 ->setAttribute('min', '1')
@@ -39,6 +44,7 @@ class ProductReviewForm extends Form {
         //debug::show($review);
         $review->write();
 
+        $form->sessionMessage('Review Saved Pending Approval', 'good');
         $this->Controller->redirectBack();
 
     }

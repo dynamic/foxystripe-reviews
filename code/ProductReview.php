@@ -3,7 +3,6 @@
 class ProductReview extends DataObject {
 
     private static $db = array(
-        'Title' => 'Varchar',
         'Content' => 'Text',
         'Approved' => 'Boolean',
         'Rating' => 'Int',

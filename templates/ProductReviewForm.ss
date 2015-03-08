@@ -1,4 +1,3 @@
-<h4>Review This Product</h4>
 <form $FormAttributes>
     <% if $Message %>
         <p id="{$FormName}_error" class="message $MessageType">$Message</p>

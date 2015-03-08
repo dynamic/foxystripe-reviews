@@ -4,6 +4,7 @@ Name: foxystripe-reviews
 ProductPage:
   extensions:
     - HasReviews
+  moderated_comments: true
 ProductPage_Controller:
   extensions:
     - HasReviews_Controller
