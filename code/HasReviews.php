@@ -65,8 +65,15 @@ class HasReviews extends DataExtension {
 
     }
 
+    public function getProductRating() {
+        return $this->owner->renderWith('ProductRating');
+    }
+
     // star rating field, read only to display average score
     public function getStarRating() {
+        Requirements::css('foxystripe-reviews/thirdparty/bootstrap/css/bootstrap.min.css');
+        Requirements::css("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.css");
+        Requirements::javascript("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.js");
         return HiddenField::create('Rating', '', $this->getAverageScore())
             ->addExtraClass('rating')
             ->setAttribute('readonly', 'readonly')
@@ -106,13 +113,10 @@ class HasReviews extends DataExtension {
 }
 
 class HasReviews_Controller extends Extension {
+
     static $allowed_actions = array(
         'ProductReviewForm'
     );
-
-    public function ProductRating() {
-        return $this->owner->renderWith('ProductRating');
-    }
 
     public function ProductReviews() {
         return $this->owner->renderWith('ProductReviews');
@@ -122,6 +126,14 @@ class HasReviews_Controller extends Extension {
         if(Member::currentUser() && $this->owner->AllowReviews == true) {
             return new ProductReviewForm($this->owner, 'ProductReviewForm');
         }
-        return '<p class="message bad">You must be logged in to post a review</p>';
+        return '<p class="message bad">You must <a href="Security/login">log in</a> to post a review</p>';
     }
+}
+
+class HasReviewsHolder_Controller extends Extension {
+
+    public function onBeforeInit() {
+        Requirements::javascript("framework/thirdparty/jquery/jquery.js");
+    }
+
 }

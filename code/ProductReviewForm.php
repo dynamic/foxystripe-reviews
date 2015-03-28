@@ -4,6 +4,10 @@ class ProductReviewForm extends Form {
 
     public function __construct($controller, $name) {
 
+        Requirements::css('foxystripe-reviews/thirdparty/bootstrap/css/bootstrap.min.css');
+        Requirements::css("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.css");
+        Requirements::javascript("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.js");
+
         $fields = FieldList::create(
             HiddenField::create('Rating')
                 ->addExtraClass('rating'),

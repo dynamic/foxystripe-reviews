@@ -1,6 +1,3 @@
-<% require css('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css') %>
-<% require css('foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.css') %>
-<% require css('foxystripe-reviews/css/foxystripe-reviews.css') %>
 <% if $AllowReviews %>
     <h4>Product Reviews</h4>
     <% if $ProductReviewList %>
@@ -41,6 +38,5 @@
     <% end_if %>
     <h4>Review This Product</h4>
     $ProductReviewForm
-    <% require javascript("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.js") %>
 <% end_if %>
 

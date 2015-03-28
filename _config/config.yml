@@ -7,6 +7,9 @@ ProductPage:
 ProductPage_Controller:
   extensions:
     - HasReviews_Controller
+ProductHolder_Controller:
+  extensions:
+    - HasReviewsHolder_Controller
 SiteConfig:
   extensions:
     - ReviewSiteConfigExtension
