@@ -3,10 +3,10 @@
 class ProductReview extends DataObject {
 
     private static $db = array(
+        'Title' => 'Varchar(255)',
         'Content' => 'Text',
         'Approved' => 'Boolean',
-        'Rating' => 'Int',
-        'MaxRating' => 'Int'
+        'Rating' => 'Int'
     );
 
     private static $has_one = array(
@@ -14,30 +14,39 @@ class ProductReview extends DataObject {
         'Customer' => 'Member'
     );
 
-    private static $has_many = array(
-        //'Ratings' => 'ProductRating'
-    );
-
     private static $summary_fields = array(
-        'Product.Title' => 'Product',
-        'Summary' => 'Summary',
+        'ShortTitle' => 'Title',
         'Created' => 'Created',
         'MemberDetails' => 'Reviewer',
         'Status' => 'Status'
     );
 
+    private static $default_sort = 'Created DESC';
+
     public function getCMSFields() {
 
         $fields = parent::getCMSFields();
 
-        /*
-        $fields->addFieldsToTab('Root.Main', array(
-            OptionSetField::create('Rating', 'Rating', array(1,2,3,4,5)))
+        $fields = FieldList::create(
+            CheckboxField::create('Approved'),
+            ReadonlyField::create('Title'),
+            ReadOnlyField::create('Content'),
+            ReadonlyField::create('Rating')
         );
-        */
 
         return $fields;
 
+    }
+
+    public function getTitle() {
+        if ($this->getField('Title')) return $this->getField('Title');
+        return 'Untitled';
+    }
+
+    public function getShortTitle() {
+        $title = $this->obj('Title');
+        if (isset($title)) return $title->LimitCharacters(20);
+        return 'Untitled';
     }
 
     public function getSummary() {
@@ -52,6 +61,13 @@ class ProductReview extends DataObject {
         $reviewer = $this->Customer()->Name;
         $email = $this->Customer()->Email;
         return $reviewer .' (' . $email .')';
+    }
+
+    public function getStarRating() {
+        return HiddenField::create('Rating', '', $this->Rating)
+            ->addExtraClass('rating')
+            ->setAttribute('readonly', 'readonly')
+            ->setAttribute('data-fractions', 4);
     }
 
 }

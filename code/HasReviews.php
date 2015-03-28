@@ -2,7 +2,9 @@
 
 class HasReviews extends DataExtension {
 
-    private static $moderated_comments;
+    private static $db = array(
+        'AllowReviews' => 'Boolean'
+    );
 
     private static $has_many = array(
         'Reviews' => 'ProductReview'
@@ -12,20 +14,33 @@ class HasReviews extends DataExtension {
         'AverageScore' => 'Decimal'
     );
 
-    public function getProductReviews() {
+    private static $defaults = array(
+        'AllowReviews' => true
+    );
 
-        $moderated = $this->owner->stat('moderated_comments');
+    public function updateSettingsFields(FieldList $fields) {
+        $fields->addFieldToTab("Root.Settings", new CheckboxField('AllowReviews'));
+        return $fields;
+    }
 
-        if ($moderated) {
-            $reviews = $this->owner->Reviews()->filter('Approved', '1');
-        } else {
-            $reviews = $this->owner->Reviews();
+    public function getProductReviewList() {
+
+        $config = SiteConfig::current_site_config();
+
+        if ($this->owner->AllowReviews == true) {
+            if ($config->ModerateReviews) {
+                $reviews = $this->owner->Reviews()->filter('Approved', '1');
+            } else {
+                $reviews = $this->owner->Reviews();
+            }
+
+            $paginatedList = new PaginatedList($reviews, Controller::curr()->request);
+            $paginatedList->setPageLength(5);
+
+            return $paginatedList;
         }
 
-        $paginatedList = new PaginatedList($reviews, Controller::curr()->request);
-        $paginatedList->setPageLength(3);
-
-        return $paginatedList;
+        return false;
     }
 
     public function getAverageScore() {
@@ -45,14 +60,49 @@ class HasReviews extends DataExtension {
             $total++;
         }
 
-        return ($score / $total);
+        if ($total > 0) return ($score / $total);
+        return false;
 
     }
 
-    public function getMaxStars() {
-        return Config::inst()->get('ProductReviewForm', 'max_stars');
+    // star rating field, read only to display average score
+    public function getStarRating() {
+        return HiddenField::create('Rating', '', $this->getAverageScore())
+            ->addExtraClass('rating')
+            ->setAttribute('readonly', 'readonly')
+            ->setAttribute('data-fractions', 4);
     }
 
+    public function updateCMSFields(FieldList $fields) {
+
+        if ($this->owner->AllowReviews) {
+
+            $config = GridFieldConfig_RecordEditor::create();
+            if (class_exists('GridFieldBulkManager')) $config->addComponent(new GridFieldBulkManager());
+
+            $reviewField = GridField::create(
+                'Reviews',
+                _t('HasReviews.Reviews', 'Product Reviews'),
+                $this->owner->Reviews(),
+                $config
+            );
+
+            $fields->addFieldToTab('Root.Reviews', $reviewField);
+        }
+    }
+
+    // delete reviews if product is deleted
+    public function onAfterDelete() {
+        if($this->owner->Status != "Published") {
+            if($this->owner->Reviews()) {
+                $reviews = $this->owner->getComponents('Reviews');
+                foreach($reviews as $review) {
+                    $review->delete();
+                }
+            }
+        }
+        parent::onBeforeDelete();
+    }
 }
 
 class HasReviews_Controller extends Extension {
@@ -60,8 +110,16 @@ class HasReviews_Controller extends Extension {
         'ProductReviewForm'
     );
 
+    public function ProductRating() {
+        return $this->owner->renderWith('ProductRating');
+    }
+
+    public function ProductReviews() {
+        return $this->owner->renderWith('ProductReviews');
+    }
+
     public function ProductReviewForm(){
-        if(Member::currentUser()) {
+        if(Member::currentUser() && $this->owner->AllowReviews == true) {
             return new ProductReviewForm($this->owner, 'ProductReviewForm');
         }
         return '<p class="message bad">You must be logged in to post a review</p>';
