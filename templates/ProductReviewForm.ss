@@ -20,4 +20,3 @@
     <% end_if %>
 </form>
 <hr />
-<% require javascript("product-reviews/bower_components/bootstrap-rating-input/build/bootstrap-rating-input.min.js") %>

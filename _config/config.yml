@@ -4,9 +4,9 @@ Name: foxystripe-reviews
 ProductPage:
   extensions:
     - HasReviews
-  moderated_comments: true
 ProductPage_Controller:
   extensions:
     - HasReviews_Controller
-ProductReviewForm:
-  max_stars: 5 # The maximum rating allowed
+SiteConfig:
+  extensions:
+    - ReviewSiteConfigExtension
