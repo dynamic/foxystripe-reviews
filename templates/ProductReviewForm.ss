@@ -10,7 +10,7 @@
     <% if $Actions %>
         <div class="Actions">
             <% loop $Actions %>
-                <% if Name == 'action_process' %>
+                <% if $Name == 'action_process' %>
                     <input class="btn button" type="submit" name="action_process" value="Submit" id="product-review-form_action_process">
                 <% else %>
                     $Field
@@ -19,4 +19,3 @@
         </div>
     <% end_if %>
 </form>
-<hr />

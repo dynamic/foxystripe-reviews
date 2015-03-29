@@ -16,10 +16,23 @@ class ProductReview extends DataObject {
 
     private static $summary_fields = array(
         'ShortTitle' => 'Title',
-        'Rating' => 'Rating',
+        'RatingNice' => 'Rating',
         'Approved.Nice' => 'Approved',
         'MemberDetails' => 'Reviewer',
         'Created' => 'Created'
+    );
+
+    private static $searchable_fields = array(
+        'Approved' => 'Approved',
+        'Product.ID' => array(
+            'title' => 'Product'
+        ),
+        'Customer.ID' => array(
+            'title' => 'Customer'
+        ),
+        'Title' => 'Title',
+        'Content' => 'Review',
+        'Created' => 'Date'
     );
 
     private static $default_sort = 'Created DESC';

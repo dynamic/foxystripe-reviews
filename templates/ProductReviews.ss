@@ -11,27 +11,7 @@
         <% end_loop %>
 
         <% with $ProductReviewList %>
-            <% if $MoreThanOnePage %>
-                <p>
-                    <% if $NotFirstPage %>
-                        <a class="prev" href="$PrevLink">Prev</a>
-                    <% end_if %>
-                    <% loop $Pages %>
-                        <% if $CurrentBool %>
-                            $PageNum
-                        <% else %>
-                            <% if $Link %>
-                                <a href="$Link">$PageNum</a>
-                            <% else %>
-                                ...
-                            <% end_if %>
-                        <% end_if %>
-                    <% end_loop %>
-                    <% if $NotLastPage %>
-                        <a class="next" href="$NextLink">Next</a>
-                    <% end_if %>
-                </p>
-            <% end_if %>
+            <% include FoxyStripePagination %>
         <% end_with %>
     <% else %>
         <p>This product doesn't have any reviews yet.</p>
