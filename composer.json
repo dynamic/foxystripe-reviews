@@ -1,0 +1,21 @@
+{
+  "name": "dynamic/foxystripe-reviews",
+  "description": "FoxyStripe Reviews is an add-on module for FoxyStripe, a SilverStripe ecommerce module designed to integrate with FoxyCart.",
+  "keywords": ["silverstripe", "foxycart", "foxystripe", "dynamic", "ecommerce", "reviews"],
+  "type": "silverstripe-module",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Dynamic Inc",
+      "email": "dev@dynamicagency.com"
+    }
+  ],
+  "require": {
+    "silverstripe/framework": "3.1.*",
+    "silverstripe/cms": "3.1.*",
+    "dynamic/foxystripe": "1.1.*",
+  },
+  "extra": {
+    "installer-name": "foxystripe-reviews"
+  }
+}
