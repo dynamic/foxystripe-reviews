@@ -45,9 +45,9 @@ class HasReviews extends DataExtension {
 
     public function getAverageScore() {
 
-        $moderated = $this->owner->stat('moderated_comments');
+        $config = SiteConfig::current_site_config();
 
-        if ($moderated) {
+        if ($config->ModerateReviews) {
             $reviews = ProductReview::get()->filter(array('ProductID' => $this->owner->ID, 'Approved' => 1));
         } else {
             $reviews = ProductReview::get()->filter(array('ProductID' => $this->owner->ID));
