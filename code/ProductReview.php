@@ -6,7 +6,7 @@ class ProductReview extends DataObject {
         'Title' => 'Varchar(255)',
         'Content' => 'Text',
         'Approved' => 'Boolean',
-        'Rating' => 'Int'
+        'Rating' => 'Decimal'
     );
 
     private static $has_one = array(
@@ -16,9 +16,10 @@ class ProductReview extends DataObject {
 
     private static $summary_fields = array(
         'ShortTitle' => 'Title',
-        'Created' => 'Created',
+        'Rating' => 'Rating',
+        'Approved.Nice' => 'Approved',
         'MemberDetails' => 'Reviewer',
-        'Status' => 'Status'
+        'Created' => 'Created'
     );
 
     private static $default_sort = 'Created DESC';
@@ -53,21 +54,19 @@ class ProductReview extends DataObject {
         return $this->obj('Content')->LimitCharacters(40);
     }
 
-    public function getStatus() {
-        return $this->Approved ? 'Approved' : 'Pending';
-    }
-
     public function getMemberDetails() {
         $reviewer = $this->Customer()->Name;
         $email = $this->Customer()->Email;
         return $reviewer .' (' . $email .')';
     }
 
+    public function getRatingNice() {
+        return round($this->Rating * 2, 0) / 2;
+    }
+
     public function getStarRating() {
-        return HiddenField::create('Rating', '', $this->Rating)
-            ->addExtraClass('rating')
-            ->setAttribute('readonly', 'readonly')
-            ->setAttribute('data-fractions', 4);
+        return RatingField::create('Rating', '', $this->getRatingNice())
+            ->setAttribute('readonly', 'readonly');
     }
 
 }

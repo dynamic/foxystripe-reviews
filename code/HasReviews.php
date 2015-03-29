@@ -18,11 +18,30 @@ class HasReviews extends DataExtension {
         'AllowReviews' => true
     );
 
+    public function updateCMSFields(FieldList $fields) {
+
+        if ($this->owner->AllowReviews) {
+
+            $config = GridFieldConfig_RecordEditor::create();
+            if (class_exists('GridFieldBulkManager')) $config->addComponent(new GridFieldBulkManager());
+
+            $reviewField = GridField::create(
+                'Reviews',
+                _t('HasReviews.Reviews', 'Product Reviews'),
+                $this->owner->Reviews(),
+                $config
+            );
+
+            $fields->addFieldToTab('Root.Reviews', $reviewField);
+        }
+    }
+
     public function updateSettingsFields(FieldList $fields) {
         $fields->addFieldToTab("Root.Settings", new CheckboxField('AllowReviews'));
         return $fields;
     }
 
+    // return a paginated list of eligible reviews
     public function getProductReviewList() {
 
         $config = SiteConfig::current_site_config();
@@ -43,6 +62,7 @@ class HasReviews extends DataExtension {
         return false;
     }
 
+    // calculate product's average score of all eligible reviews
     public function getAverageScore() {
 
         $config = SiteConfig::current_site_config();
@@ -60,42 +80,20 @@ class HasReviews extends DataExtension {
             $total++;
         }
 
-        if ($total > 0) return ($score / $total);
+        if ($total > 0) return round(($score / $total) * 2, 0) / 2;
         return false;
 
     }
 
-    public function getProductRating() {
-        return $this->owner->renderWith('ProductRating');
-    }
-
     // star rating field, read only to display average score
     public function getStarRating() {
-        Requirements::css('foxystripe-reviews/thirdparty/bootstrap/css/bootstrap.min.css');
-        Requirements::css("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.css");
-        Requirements::javascript("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.js");
-        return HiddenField::create('Rating', '', $this->getAverageScore())
-            ->addExtraClass('rating')
-            ->setAttribute('readonly', 'readonly')
-            ->setAttribute('data-fractions', 4);
+        return RatingField::create('Rating', '', $this->getAverageScore())
+            ->setAttribute('readonly', 'readonly');
     }
 
-    public function updateCMSFields(FieldList $fields) {
-
-        if ($this->owner->AllowReviews) {
-
-            $config = GridFieldConfig_RecordEditor::create();
-            if (class_exists('GridFieldBulkManager')) $config->addComponent(new GridFieldBulkManager());
-
-            $reviewField = GridField::create(
-                'Reviews',
-                _t('HasReviews.Reviews', 'Product Reviews'),
-                $this->owner->Reviews(),
-                $config
-            );
-
-            $fields->addFieldToTab('Root.Reviews', $reviewField);
-        }
+    // call to render ProductRating include in template
+    public function getProductRating() {
+        return $this->owner->renderWith('ProductRating');
     }
 
     // delete reviews if product is deleted
@@ -108,7 +106,7 @@ class HasReviews extends DataExtension {
                 }
             }
         }
-        parent::onBeforeDelete();
+        parent::onAfterDelete();
     }
 }
 
@@ -118,10 +116,12 @@ class HasReviews_Controller extends Extension {
         'ProductReviewForm'
     );
 
+    // call to render ProductReviews include in template
     public function ProductReviews() {
         return $this->owner->renderWith('ProductReviews');
     }
 
+    // only display form is user is logged in
     public function ProductReviewForm(){
         if(Member::currentUser() && $this->owner->AllowReviews == true) {
             return new ProductReviewForm($this->owner, 'ProductReviewForm');
@@ -132,6 +132,7 @@ class HasReviews_Controller extends Extension {
 
 class HasReviewsHolder_Controller extends Extension {
 
+    // require jquery in ProductHolder for bootstrap ratings
     public function onBeforeInit() {
         Requirements::javascript("framework/thirdparty/jquery/jquery.js");
     }
