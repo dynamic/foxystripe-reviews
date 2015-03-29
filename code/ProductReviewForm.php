@@ -4,13 +4,9 @@ class ProductReviewForm extends Form {
 
     public function __construct($controller, $name) {
 
-        Requirements::css('foxystripe-reviews/thirdparty/bootstrap/css/bootstrap.min.css');
-        Requirements::css("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.css");
-        Requirements::javascript("foxystripe-reviews/thirdparty/bootstrap-rating/bootstrap-rating.js");
-
         $fields = FieldList::create(
-            HiddenField::create('Rating')
-                ->addExtraClass('rating'),
+            RatingField::create('Rating')
+                ->setAttribute('required','true'),
             TextField::create('Title', '')
                 ->setAttribute('placeholder', 'Title')
                 ->setAttribute('required', 'true'),
@@ -35,10 +31,9 @@ class ProductReviewForm extends Form {
         $review->ProductID = $productID;
         $review->CustomerID = $memberID;
 
-        //debug::show($review);
         $review->write();
 
-        $form->sessionMessage('Review Saved Pending Approval', 'good');
+        $form->sessionMessage('Thank you for your review!', 'good');
         $this->Controller->redirectBack();
 
     }
