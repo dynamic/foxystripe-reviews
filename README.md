@@ -6,9 +6,8 @@ Add product reviews to your FoxyStripe store. Your customers can rate the produc
 
 Features include:
 
-*	five star rating field for input and display
-*	comment  moderation
-*	requires customers to be logged in
+*	RatingField for input and display using [Bootstrap Rating](https://github.com/dreyescat/bootstrap-rating/)
+*	Review  moderation
 
 ## Installation
 
@@ -19,7 +18,7 @@ Features include:
 
 ### Composer Installation
 
-`"require": { "dynamic/foxystripe-reviews": "*" }`
+`"require": { "dynamic/foxystripe-reviews": "dev-master" }`
 
 ### Git Installation
 
@@ -33,26 +32,33 @@ Place this directory in the root of your SilverStripe installation, and rename t
 
 Once FoxyStripe Reviews is installed, run a dev/build to setup the database.
 
-In the CMS, reviews can be enabled in the Settings tab of a Product page. Reviews will be enbaled by default when new Products are created.
+### Settings
 
-Comment moderation is enabled by default, so only reviews marked "approved" will display on the Product page. Moderation can be disabled in the CMS in Settings > Reviews.
+Reviews can be enabled in the Settings tab of a Product page. Reviews will be enbaled by default as new Products are created.
+
+Comment moderation is enabled by default, and can be disabled in the CMS in Settings > Reviews.
+
+### Templates
+
+Use `$ProductRating` to display the product's 5 star rating
+
+Use `$ProductReviews` to display the form and a paginated list of product reviews 
 
 ## Usage
 
-With reviews enabled, a review form will display near the bottom of the Product page. Customers can rate the product from 1-5 stars, and leave feedback on their experience.
+With reviews enabled, a form will display near the bottom of the Product page. Logged in customers can rate the product from 1-5 stars, and leave feedback on their experience.
 
-Approved reviews will display below the product information. The list of reviews is paginated to handle any number of reviews.
+Eligible reviews will display in a paginated list below the product information. 
 
-Products display an average rating score.
-
-Customers are required to login to post a review.
-
+If any eligible reviews have been submitted for a product, and the average score is greater than 1, the product will display a 5 star rating.
 
 ## Additional Information
 
 ### Maintainer Contact
 
  *  [Dynamic](http://www.dynamicagency.com) (<dev@dynamicagency.com>)
+ 
+Contributions welcome by pull request and/or issue report. Please follow Silverstripe code standards.
  
 ### License
 
